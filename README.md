@@ -80,18 +80,48 @@ python test_rag.py
 - `cli_chat.py`: Command-line chat interface
 - `test_rag.py`: Basic functionality tests
 
-## Example Usage
+```mermaid
+graph TD
+%% User Entry
+      USER[User] --> CLI[cli_chat.py]
 
-```
-💬 You: Tell me about Python programming
-🤖 Assistant: [Searches knowledge base and provides informed response]
+      %% Main Flow
+      CLI --> CLIENT[mcp_client.py]
+      CLIENT --> GROQ[groq_client.py]
+      CLIENT --> SERVER[mcp_server.py]
 
-💬 You: /add
-Enter document content: JavaScript is a versatile programming language...
-✓ Document added successfully!
+      %% Core Components
+      SERVER --> VECTOR[vector_store.py]
+      GROQ --> API[Groq API]
+      VECTOR --> CHROMA[(ChromaDB)]
+      VECTOR --> EMBED[SentenceTransformer]
 
-💬 You: What's the difference between Python and JavaScript?
-🤖 Assistant: [Uses both stored documents to compare the languages]
+      %% Main Functions
+      SERVER --> SEARCH[search_documents]
+      SERVER --> ADD[add_document]
+      SERVER --> ADDFILE[add_file]
+
+      %% Vector Operations
+      ADD --> CHUNK[Text Chunking]
+      CHUNK --> STORE[Store Embeddings]
+      SEARCH --> RETRIEVE[Retrieve Context]
+
+      %% Data Flow
+      STORE --> CHROMA
+      RETRIEVE --> CHROMA
+      RETRIEVE --> GROQ
+      GROQ --> CLI
+
+      %% Styling
+      classDef user fill:#e1f5fe
+      classDef app fill:#fff3e0
+      classDef external fill:#e8f5e8
+      classDef data fill:#f3e5f5
+
+      class USER user
+      class CLI,CLIENT,SERVER,VECTOR app
+      class API,CHROMA,EMBED external
+      class CHUNK,STORE,RETRIEVE data
 ```
 
 The system automatically manages the RAG pipeline, searching for relevant context when needed and providing informed responses based on your knowledge base.
